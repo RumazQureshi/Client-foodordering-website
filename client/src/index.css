@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0 0% 4%);
+  --foreground: hsl(0 0% 100%);
+  --card: hsl(0 0% 10%);
+  --card-foreground: hsl(0 0% 100%);
+  --popover: hsl(0 0% 4%);
+  --popover-foreground: hsl(0 0% 100%);
+  --primary: hsl(51 100% 50%);
+  --primary-foreground: hsl(0 0% 4%);
+  --secondary: hsl(0 0% 12%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(0 0% 88%);
+  --muted-foreground: hsl(0 0% 88%);
+  --accent: hsl(54 100% 62%);
+  --accent-foreground: hsl(51 100% 50%);
+  --destructive: hsl(0 85% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(0 0% 16%);
+  --input: hsl(0 0% 14%);
+  --ring: hsl(51 100% 50%);
+  --chart-1: hsl(51 100% 50%);
+  --chart-2: hsl(159 100% 36%);
+  --chart-3: hsl(42 93% 56%);
+  --chart-4: hsl(147 79% 42%);
+  --chart-5: hsl(341 75% 51%);
+  --sidebar: hsl(0 0% 10%);
+  --sidebar-foreground: hsl(0 0% 85%);
+  --sidebar-primary: hsl(51 100% 50%);
+  --sidebar-primary-foreground: hsl(0 0% 4%);
+  --sidebar-accent: hsl(0 0% 8%);
+  --sidebar-accent-foreground: hsl(51 100% 50%);
+  --sidebar-border: hsl(0 0% 15%);
+  --sidebar-ring: hsl(51 100% 50%);
+  --font-sans: 'Montserrat', sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-poppins: 'Poppins', sans-serif;
+  --radius: 1rem;
+  --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.5);
+  --shadow-glow-lg: 0 0 40px rgba(255, 215, 0, 0.6);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-poppins);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .glow-btn {
+    @apply transition-all duration-300;
+  }
+
+  .glow-btn:hover {
+    box-shadow: var(--shadow-glow), var(--shadow-glow-lg);
+    transform: translateY(-2px);
+  }
+
+  .food-card {
+    @apply transition-all duration-300;
+  }
+
+  .food-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
+  }
+
+  .nav-link {
+    @apply relative transition-colors duration-300;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+    bottom: -4px;
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    @apply w-full;
+  }
+
+  .cart-pulse {
+    animation: cartPulse 0.3s ease;
+  }
+
+  @keyframes cartPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-glow-lg {
+    box-shadow: var(--shadow-glow-lg);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(0 0% 10%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(51 100% 50%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(45 100% 45%);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: hsl(51 100% 50%);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
