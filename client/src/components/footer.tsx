@@ -15,10 +15,10 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <Utensils className="text-primary-foreground" />
+              <div className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center overflow-hidden">
+                <img src="/logo.png" alt="AL-Hani Logo" className="w-full h-full object-contain" />
               </div>
-              <h3 className="text-xl font-bold text-primary">Shan Fast Food</h3>
+              <h3 className="text-xl font-bold text-primary">AL-Hani Fast Food</h3>
             </div>
             <p className="text-muted text-sm">
               Taste That Speaks for Itself! Serving delicious fast food with love since 2020.
@@ -70,17 +70,21 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-bold text-primary mb-4">Contact Info</h4>
             <ul className="space-y-2 text-sm text-muted">
-              <li className="flex items-center">
-                <Phone className="text-primary mr-2 w-4 h-4" />
-                +92 300 1234567
+              <li className="flex items-start">
+                <Phone className="text-primary mr-2 w-4 h-4 mt-1" />
+                <div>
+                  <p>+92 311 2652126</p>
+                  <p>+92 312 2684096</p>
+                </div>
               </li>
               <li className="flex items-center">
                 <Mail className="text-primary mr-2 w-4 h-4" />
-                info@shanfastfood.com
+                info@alhanifastfood.com
               </li>
               <li className="flex items-center">
                 <MapPin className="text-primary mr-2 w-4 h-4" />
-                Main Street, City Center
+                Coast Guard Chowrangi, Korangi
+                Karachi, Pakistan
               </li>
             </ul>
           </div>
@@ -97,32 +101,40 @@ export function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted text-sm mb-4 md:mb-0">
-            &copy; 2024 Shan Fast Food. All rights reserved.
+            &copy; 2026-2030 AL-Hani Fast Food. All rights reserved.
           </p>
           <div className="flex space-x-4">
             <a 
-              href="#" 
+              href="https://www.facebook.com/rumazqureshi" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
               data-testid="footer-social-facebook"
             >
               <Facebook className="w-5 h-5" />
             </a>
             <a 
-              href="#" 
+              href="https://www.instagram.com/rumaznaveed/" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
               data-testid="footer-social-instagram"
             >
               <Instagram className="w-5 h-5" />
             </a>
             <a 
-              href="#" 
+              href="https://x.com/rasinnovatech" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
               data-testid="footer-social-twitter"
             >
               <Twitter className="w-5 h-5" />
             </a>
             <a 
-              href="#" 
+              href="https://wa.me/923122684096" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
               data-testid="footer-social-whatsapp"
             >

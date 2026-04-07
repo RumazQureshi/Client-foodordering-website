@@ -1,11 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext, createContext, type ReactNode } from 'react';
 import type { MenuItem } from '@shared/schema';
 
 export interface CartItem extends MenuItem {
   quantity: number;
 }
 
-export function useCart() {
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (item: MenuItem) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, change: number) => void;
+  clearCart: () => void;
+  getTotalItems: () => number;
+  getSubtotal: () => number;
+  getTotal: () => number;
+}
+
+const CartContext = createContext<CartContextType | null>(null);
+
+export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
   // Load cart from localStorage on mount
@@ -71,19 +84,29 @@ export function useCart() {
   };
 
   const getTotal = () => {
-    const subtotal = getSubtotal();
-    const deliveryFee = subtotal > 0 ? 150 : 0;
-    return subtotal + deliveryFee;
+    return getSubtotal();
   };
 
-  return {
-    cart,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    getTotalItems,
-    getSubtotal,
-    getTotal,
-  };
+  return (
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      getTotalItems,
+      getSubtotal,
+      getTotal,
+    }}>
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+export function useCart() {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
 }

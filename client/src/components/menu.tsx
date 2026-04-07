@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +11,18 @@ import type { MenuItem } from '@shared/schema';
 export function Menu() {
   const [activeCategory, setActiveCategory] = useState('all');
   const { addToCart } = useCart();
+
+  useEffect(() => {
+    const handleSelectCategory = (event: any) => {
+      const category = event.detail;
+      if (category) {
+        setActiveCategory(category);
+      }
+    };
+
+    window.addEventListener('select-menu-category', handleSelectCategory);
+    return () => window.removeEventListener('select-menu-category', handleSelectCategory);
+  }, []);
 
   const { data: menuItems = [], isLoading } = useQuery<MenuItem[]>({
     queryKey: ['/api/menu'],
@@ -50,78 +63,114 @@ export function Menu() {
         </div>
 
         {/* Category Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-wrap justify-center gap-3 mb-12"
+        >
           {categories.map(category => (
             <Button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
               variant={activeCategory === category.id ? "default" : "outline"}
-              className={`px-6 py-3 rounded-full font-semibold transition ${
+              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 transform ${
                 activeCategory === category.id 
-                  ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                  : 'bg-card text-foreground hover:bg-primary hover:text-primary-foreground'
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90 scale-105 shadow-glow' 
+                  : 'bg-card text-foreground hover:bg-primary hover:text-primary-foreground hover:scale-105'
               }`}
               data-testid={`filter-${category.id}`}
             >
               {category.label}
             </Button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Menu Items Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {isLoading ? (
-            // Loading skeletons
-            Array.from({ length: 8 }).map((_, index) => (
-              <Card key={index} className="bg-card shadow-card overflow-hidden">
-                <Skeleton className="w-full h-48" />
-                <CardContent className="p-5">
-                  <Skeleton className="h-6 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-full mb-4" />
-                  <div className="flex items-center justify-between">
-                    <Skeleton className="h-8 w-20" />
-                    <Skeleton className="h-10 w-20" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : filteredItems.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted text-lg">No items found in this category.</p>
-            </div>
-          ) : (
-            filteredItems.map(item => (
-              <Card 
-                key={item.id} 
-                className="food-card bg-card rounded-2xl overflow-hidden shadow-card"
-                data-testid={`menu-item-${item.id}`}
+        <motion.div 
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          <AnimatePresence mode="popLayout">
+            {isLoading ? (
+              // Loading skeletons
+              Array.from({ length: 8 }).map((_, index) => (
+                <motion.div
+                  key={`skeleton-${index}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <Card className="bg-card shadow-card overflow-hidden">
+                    <Skeleton className="w-full h-48" />
+                    <CardContent className="p-5">
+                      <Skeleton className="h-6 w-3/4 mb-2" />
+                      <Skeleton className="h-4 w-full mb-4" />
+                      <div className="flex items-center justify-between">
+                        <Skeleton className="h-8 w-20" />
+                        <Skeleton className="h-10 w-20" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            ) : filteredItems.length === 0 ? (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full text-center py-12"
               >
-                <img 
-                  src={item.image} 
-                  alt={item.name} 
-                  className="w-full h-48 object-cover"
-                />
-                <CardContent className="p-5">
-                  <h3 className="text-xl font-bold text-primary mb-2">{item.name}</h3>
-                  <p className="text-sm text-muted mb-4">{item.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-primary">
-                      Rs. {item.price}
-                    </span>
-                    <Button
-                      onClick={() => handleAddToCart(item)}
-                      className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-semibold hover:bg-primary/90 transition"
-                      data-item-id={item.id}
-                      data-testid={`add-to-cart-${item.id}`}
-                    >
-                      <span className="mr-1">+</span> Add
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
+                <p className="text-muted text-lg">No items found in this category.</p>
+              </motion.div>
+            ) : (
+              filteredItems.map(item => (
+                <motion.div
+                  layout
+                  key={item.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card 
+                    id={`menu-item-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="food-card bg-card rounded-2xl overflow-hidden shadow-card border-none hover:shadow-glow group"
+                    data-testid={`menu-item-${item.id}`}
+                  >
+                    <div className="relative overflow-hidden">
+                      <img 
+                        src={item.image} 
+                        alt={item.name} 
+                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-300"></div>
+                    </div>
+                    <CardContent className="p-5">
+                      <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-muted mb-4 line-clamp-2">{item.description}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-primary">
+                          Rs. {item.price}
+                        </span>
+                        <Button
+                          onClick={() => handleAddToCart(item)}
+                          className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-semibold hover:bg-primary/90 transition shadow-lg hover:scale-105 active:scale-95"
+                          data-item-id={item.id}
+                          data-testid={`add-to-cart-${item.id}`}
+                        >
+                          <span className="mr-1">+</span> Add
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );

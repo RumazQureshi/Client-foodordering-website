@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { Navigation } from '@/components/navigation';
 import { Hero } from '@/components/hero';
 import { Menu } from '@/components/menu';
@@ -14,12 +15,17 @@ import { useCart, type CartItem } from '@/hooks/use-cart';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 
 export default function Home() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const { cart, updateQuantity, removeFromCart, getSubtotal, getTotal } = useCart();
 
   const subtotal = getSubtotal();
-  const deliveryFee = subtotal > 0 ? 150 : 0;
-  const total = subtotal + deliveryFee;
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -31,6 +37,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-[60] origin-left"
+        style={{ scaleX }}
+      />
       <Navigation onCartClick={() => setCartSidebarOpen(true)} />
       <Hero />
       <Menu />
@@ -44,15 +54,6 @@ export default function Home() {
         <SheetContent side="right" className="w-[400px] bg-card p-0 flex flex-col">
           <div className="p-6 border-b border-border flex justify-between items-center">
             <h3 className="text-2xl font-bold text-primary">Your Cart</h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setCartSidebarOpen(false)}
-              className="text-muted hover:text-primary"
-              data-testid="close-cart-sidebar"
-            >
-              <X className="w-6 h-6" />
-            </Button>
           </div>
           
           <div className="flex-1 overflow-y-auto p-6" data-testid="cart-sidebar-items">
@@ -111,19 +112,11 @@ export default function Home() {
 
           <div className="p-6 border-t border-border">
             <div className="space-y-3 mb-4">
-              <div className="flex justify-between text-muted">
-                <span>Subtotal:</span>
-                <span data-testid="sidebar-subtotal">Rs. {subtotal}</span>
-              </div>
-              <div className="flex justify-between text-muted">
-                <span>Delivery:</span>
-                <span>Rs. {deliveryFee}</span>
-              </div>
-              <Separator />
               <div className="flex justify-between text-xl font-bold text-primary">
                 <span>Total:</span>
-                <span data-testid="sidebar-total">Rs. {total}</span>
+                <span data-testid="sidebar-total">Rs. {subtotal}</span>
               </div>
+              <p className="text-xs text-muted italic">Delivery charges will be confirmed based on your location.</p>
             </div>
             <Button
               onClick={() => scrollToSection('order')}
@@ -131,7 +124,7 @@ export default function Home() {
               className="w-full glow-btn bg-primary text-primary-foreground py-4 rounded-full font-bold hover:bg-primary/90 transition"
               data-testid="proceed-to-checkout-button"
             >
-              🛍️ Proceed to Checkout
+              🛍️ Proceed to Order
             </Button>
           </div>
         </SheetContent>

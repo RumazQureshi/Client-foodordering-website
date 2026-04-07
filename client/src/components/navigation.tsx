@@ -78,11 +78,11 @@ export function Navigation({ onCartClick }: NavigationProps) {
             className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
             data-testid="logo-button"
           >
-            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-              <Utensils className="text-primary-foreground text-xl" />
+            <div className="w-12 h-12 bg-transparent rounded-full flex items-center justify-center overflow-hidden">
+              <img src="/logo.png" alt="AL-Hani Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold font-poppins text-primary">Shan Fast Food</h1>
+              <h1 className="text-2xl font-bold font-poppins text-primary">AL-Hani Fast Food</h1>
               <p className="text-xs text-muted hidden sm:block">Taste That Speaks for Itself!</p>
             </div>
           </button>

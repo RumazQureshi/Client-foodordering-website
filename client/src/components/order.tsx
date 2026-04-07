@@ -15,7 +15,10 @@ import { useCart } from '@/hooks/use-cart';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, Trash2, Plus, Minus } from 'lucide-react';
+import { SiWhatsapp } from 'react-icons/si';
 import type { Order } from '@shared/schema';
+
+const AL_HANI_WHATSAPP_NUMBER = '+923112652126';
 
 const orderFormSchema = z.object({
   customerName: z.string().min(2, 'Name must be at least 2 characters'),
@@ -97,8 +100,6 @@ export function Order() {
   };
 
   const subtotal = getSubtotal();
-  const deliveryFee = subtotal > 0 ? 150 : 0;
-  const total = subtotal + deliveryFee;
 
   const quickOrderItems = cart.slice(0, 8);
 
@@ -270,34 +271,89 @@ export function Order() {
                 <Separator />
 
                 <div className="space-y-3">
-                  <div className="flex justify-between text-muted">
-                    <span>Subtotal:</span>
-                    <span data-testid="subtotal">Rs. {subtotal}</span>
-                  </div>
-                  <div className="flex justify-between text-muted">
-                    <span>Delivery Fee:</span>
-                    <span data-testid="delivery-fee">Rs. {deliveryFee}</span>
-                  </div>
-                  <div className="flex justify-between text-xl font-bold text-primary border-t border-border pt-3">
+                  <div className="flex justify-between text-xl font-bold text-primary">
                     <span>Total:</span>
-                    <span data-testid="total-price">Rs. {total}</span>
+                    <span data-testid="total-price">Rs. {subtotal}</span>
                   </div>
+                  <p className="text-xs text-muted italic">Delivery charges will be according to your location.</p>
                 </div>
 
                 <Button
-                  onClick={form.handleSubmit(onSubmit)}
-                  disabled={cart.length === 0 || createOrderMutation.isPending}
-                  className="w-full glow-btn bg-primary text-primary-foreground py-4 rounded-full font-bold text-lg hover:bg-primary/90 transition"
-                  data-testid="place-order-button"
+                  onClick={() => {
+                    const customerName = form.getValues('customerName');
+                    const customerPhone = form.getValues('customerPhone');
+                    const customerAddress = form.getValues('customerAddress');
+
+                    if (cart.length === 0) {
+                      toast({
+                        title: "Cart is Empty",
+                        description: "Please add items to your cart before ordering.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
+                    if (!customerName || customerName.length < 2) {
+                      toast({
+                        title: "Name Required",
+                        description: "Please enter your name in the delivery details.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
+                    if (!customerPhone || customerPhone.length < 10) {
+                      toast({
+                        title: "Phone Required",
+                        description: "Please enter a valid phone number.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
+                    if (!customerAddress || customerAddress.length < 10) {
+                      toast({
+                        title: "Address Required",
+                        description: "Please enter your delivery address.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+
+                    const itemsList = cart
+                      .map(item => `- ${item.quantity}x ${item.name} -- Rs ${item.price * item.quantity}`)
+                      .join('\n');
+
+                    const message = `*NEW ORDER -- AL-HANI FAST FOOD OFFICIAL*
+================================================
+
+*Order Items:*
+${itemsList}
+
+------------------------------------------------
+*Subtotal:* Rs ${subtotal}
+*TOTAL (COD):* Rs ${subtotal}
+================================================
+
+*Customer Name:* ${customerName}
+*Phone:* ${customerPhone}
+*Address:* ${customerAddress}
+
+================================================
+*Please call customer to VERIFY before dispatch.*
+Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
+
+                    const encodedMessage = encodeURIComponent(message);
+                    const waUrl = `https://wa.me/${AL_HANI_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+                    window.open(waUrl, '_blank');
+                  }}
+                  disabled={cart.length === 0}
+                  className="w-full py-4 rounded-full font-bold text-lg transition shadow-lg hover:scale-[1.02] active:scale-95"
+                  style={{ backgroundColor: '#25D366', color: '#fff' }}
+                  data-testid="order-via-whatsapp-button"
                 >
-                  {createOrderMutation.isPending ? (
-                    <>🔄 Processing...</>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-5 h-5 mr-2" />
-                      Place Order
-                    </>
-                  )}
+                  <SiWhatsapp className="w-5 h-5 mr-2" />
+                  Order via WhatsApp
                 </Button>
                 
                 <Button
