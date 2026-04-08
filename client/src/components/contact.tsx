@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,11 +8,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
-import { Send, Phone, Mail, Clock, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
-import { SiWhatsapp } from 'react-icons/si';
+import { Send, Phone, Mail, Clock, MapPin, Facebook, Instagram } from 'lucide-react';
+import { SiWhatsapp, SiTiktok } from 'react-icons/si';
 
-const AL_HANI_WHATSAPP_NUMBER = '+923122684096';
+const AL_HANI_WHATSAPP_NUMBER = '+923112652126';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -83,7 +80,7 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
             transition={{ duration: 0.8 }}
           >
             <Card className="bg-card shadow-card border-none hover:shadow-glow transition-shadow duration-300">
-              <CardHeader>
+              <CardHeader className="text-center sm:text-left">
                 <CardTitle className="text-2xl font-bold text-primary">Send us a Message</CardTitle>
               </CardHeader>
               <CardContent>
@@ -171,7 +168,7 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
             <Card className="bg-card shadow-card overflow-hidden border-none cursor-pointer group h-64">
               <iframe
                 title="Google Maps Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3620.370!2d67.144!3d24.813!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33c696e5675fd%3A0xe54d8ed96fe08764!2sCoast%20Guard%20Chowrangi%2C%20Korangi%2C%20Karachi!5e0!3m2!1sen!2s!4v1712502683123!5m2!1sen!2s"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.361165461665!2d67.13768859999999!3d24.817319599999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33b0038fb1f3d%3A0x80ca8a695f581326!2sAlhani%20broast!5e0!3m2!1sen!2s!4v1775634645482!5m2!1sen!2s"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -183,7 +180,7 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
             </Card>
 
             {/* Contact Details */}
-            <Card className="bg-card shadow-card border-none hover:shadow-glow transition-all duration-300">
+            <Card className="bg-card shadow-card border-none hover:shadow-glow transition-all duration-300 px-4 sm:px-0">
               <CardContent className="p-8 space-y-6">
                 <div className="flex items-start space-x-4 group">
                   <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary/40">
@@ -191,8 +188,14 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                   </div>
                   <div>
                     <h4 className="text-lg font-bold text-primary mb-1">Location</h4>
-                    <p className="text-muted">Coast Guard Chowrangi, Korangi</p>
-                    <p className="text-muted">Karachi, Pakistan</p>
+                    <a 
+                      href="https://maps.app.goo.gl/1Xfz5cVZDHbEEjQSA"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted hover:text-primary transition-colors font-medium border-b border-primary/20 hover:border-primary"
+                    >
+                      Al Hani Broast on google maps
+                    </a>
                   </div>
                 </div>
 
@@ -203,7 +206,6 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                   <div>
                     <h4 className="text-lg font-bold text-primary mb-1">Phone</h4>
                     <p className="text-muted">+92 311 2652126</p>
-                    <p className="text-muted">+92 312 2684096</p>
                   </div>
                 </div>
 
@@ -236,10 +238,10 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                 <h4 className="text-xl font-bold text-primary mb-4">Follow Us</h4>
                 <div className="flex justify-center sm:justify-start space-x-4">
                   {[
-                    { icon: Facebook, id: "social-facebook", href: "https://www.facebook.com/rumazqureshi" },
-                    { icon: Instagram, id: "social-instagram", href: "https://www.instagram.com/rumaznaveed/" },
-                    { icon: Twitter, id: "social-twitter", href: "https://x.com/rasinnovatech" },
-                    { icon: SiWhatsapp, id: "social-whatsapp", href: `https://wa.me/923122684096` }
+                    { icon: Facebook, id: "social-facebook", href: "https://www.facebook.com/share/1JFYRYqgWp/" },
+                    { icon: Instagram, id: "social-instagram", href: "https://www.instagram.com/asim9530?igsh=MWZwYWd3NGFiNWFw" },
+                    { icon: SiTiktok, id: "social-tiktok", href: "https://www.tiktok.com/@muhammadaasim36?_r=1&_t=ZN-95MWHUonZMU" },
+                    { icon: SiWhatsapp, id: "social-whatsapp", href: `https://wa.me/923112652126` }
                   ].map((social, idx) => (
                     <motion.a 
                       key={idx}

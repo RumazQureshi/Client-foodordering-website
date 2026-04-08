@@ -13,6 +13,7 @@ interface NavigationProps {
 export function Navigation({ onCartClick }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { getTotalItems } = useCart();
   
   useEffect(() => {
@@ -41,6 +42,7 @@ export function Navigation({ onCartClick }: NavigationProps) {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+    setIsMenuOpen(false);
   };
 
   const navItems = [
@@ -115,7 +117,7 @@ export function Navigation({ onCartClick }: NavigationProps) {
             </Button>
             
             {/* Mobile Menu */}
-            <Sheet>
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
                 <Button 
                   variant="ghost" 

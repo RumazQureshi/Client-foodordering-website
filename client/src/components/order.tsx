@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,18 +11,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
-import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, Trash2, Plus, Minus } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
-import type { Order } from '@shared/schema';
+import type { Order, MenuItem } from '@/lib/types';
 
 const AL_HANI_WHATSAPP_NUMBER = '+923112652126';
 
 const orderFormSchema = z.object({
-  customerName: z.string().min(2, 'Name must be at least 2 characters'),
-  customerPhone: z.string().min(10, 'Phone number must be at least 10 characters'),
-  customerAddress: z.string().min(10, 'Address must be at least 10 characters'),
+  customerName: z.string().min(2, 'Write your full name'),
+  customerPhone: z.string().min(10, 'Write your correct phone number'),
+  customerAddress: z.string().min(10, 'Write your complete address'),
   orderNotes: z.string().optional(),
 });
 
@@ -34,7 +32,6 @@ export function Order() {
   const [successOrder, setSuccessOrder] = useState<Order | null>(null);
   const { cart, updateQuantity, removeFromCart, clearCart, getSubtotal, getTotal } = useCart();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(orderFormSchema),
@@ -47,9 +44,64 @@ export function Order() {
   });
 
 
-  const onSubmit = (data: OrderFormData) => {
-    // This function is still used to trigger validation
-    form.trigger();
+  const onWhatsAppSubmit = (data: OrderFormData) => {
+    if (cart.length === 0) {
+      toast({
+        title: "Cart is Empty",
+        description: "Please add items to your cart before ordering.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const itemsList = cart
+      .map(item => `- ${item.quantity}x ${item.name} -- Rs ${item.price * item.quantity}`)
+      .join('\n');
+
+    const message = `*NEW ORDER -- AL-HANI FAST FOOD OFFICIAL*
+================================================
+
+*Order Items:*
+${itemsList}
+
+------------------------------------------------
+*Subtotal:* Rs ${subtotal}
+*TOTAL (COD):* Rs ${subtotal}
+================================================
+
+*Customer Name:* ${data.customerName}
+*Phone:* ${data.customerPhone}
+*Address:* ${data.customerAddress}
+
+================================================
+*Please call customer to VERIFY before dispatch.*
+Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const waUrl = `https://wa.me/${AL_HANI_WHATSAPP_NUMBER}?text=${encodedMessage}`;
+    window.open(waUrl, '_blank');
+
+    // Pure frontend success flow
+    setSuccessOrder({
+      id: `WA-${Math.floor(Math.random() * 1000000)}`,
+      customerName: data.customerName,
+      customerPhone: data.customerPhone,
+      customerAddress: data.customerAddress,
+      orderNotes: data.orderNotes || undefined,
+      items: cart,
+      subtotal: subtotal,
+      deliveryFee: 150,
+      total: subtotal,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    });
+    setOrderSuccess(true);
+    clearCart();
+    form.reset();
+    toast({
+      title: "Order Processed!",
+      description: "WhatsApp message generated and cart cleared.",
+    });
   };
 
   const subtotal = getSubtotal();
@@ -76,16 +128,17 @@ export function Order() {
               </CardHeader>
               <CardContent>
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <form id="order-form" onSubmit={form.handleSubmit(onWhatsAppSubmit)} className="space-y-4">
                     <FormField
                       control={form.control}
                       name="customerName"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem id="customer-name-field">
                           <FormLabel className="text-muted font-semibold">Full Name *</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
+                              id="customerName"
                               placeholder="Enter your name"
                               className="bg-secondary border border-border focus:border-primary"
                               data-testid="customer-name-input"
@@ -99,11 +152,12 @@ export function Order() {
                       control={form.control}
                       name="customerPhone"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem id="customer-phone-field">
                           <FormLabel className="text-muted font-semibold">Phone Number *</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
+                              id="customerPhone"
                               type="tel"
                               placeholder="+92 300 1234567"
                               className="bg-secondary border border-border focus:border-primary"
@@ -118,11 +172,12 @@ export function Order() {
                       control={form.control}
                       name="customerAddress"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem id="customer-address-field">
                           <FormLabel className="text-muted font-semibold">Delivery Address *</FormLabel>
                           <FormControl>
                             <Textarea
                               {...field}
+                              id="customerAddress"
                               rows={3}
                               placeholder="Enter complete delivery address"
                               className="bg-secondary border border-border focus:border-primary"
@@ -164,8 +219,8 @@ export function Order() {
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-primary">Order Summary</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-3 max-h-64 overflow-y-auto" data-testid="cart-items-list">
+              <CardContent className="space-y-6 p-4 sm:p-6">
+                <div className="space-y-3 max-h-80 overflow-y-auto pr-1" data-testid="cart-items-list">
                   {cart.length === 0 ? (
                     <p className="text-muted text-center py-8">Your cart is empty</p>
                   ) : (
@@ -178,7 +233,7 @@ export function Order() {
                         <img 
                           src={item.image} 
                           alt={item.name} 
-                          className="w-16 h-16 rounded-lg object-cover"
+                          className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover"
                         />
                         <div className="flex-1">
                           <h4 className="font-semibold text-foreground text-sm">{item.name}</h4>
@@ -232,96 +287,8 @@ export function Order() {
                 </div>
 
                 <Button
-                  onClick={() => {
-                    const customerName = form.getValues('customerName');
-                    const customerPhone = form.getValues('customerPhone');
-                    const customerAddress = form.getValues('customerAddress');
-
-                    if (cart.length === 0) {
-                      toast({
-                        title: "Cart is Empty",
-                        description: "Please add items to your cart before ordering.",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    if (!customerName || customerName.length < 2) {
-                      toast({
-                        title: "Name Required",
-                        description: "Please enter your name in the delivery details.",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    if (!customerPhone || customerPhone.length < 10) {
-                      toast({
-                        title: "Phone Required",
-                        description: "Please enter a valid phone number.",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    if (!customerAddress || customerAddress.length < 10) {
-                      toast({
-                        title: "Address Required",
-                        description: "Please enter your delivery address.",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-
-                    const itemsList = cart
-                      .map(item => `- ${item.quantity}x ${item.name} -- Rs ${item.price * item.quantity}`)
-                      .join('\n');
-
-                    const message = `*NEW ORDER -- AL-HANI FAST FOOD OFFICIAL*
-================================================
-
-*Order Items:*
-${itemsList}
-
-------------------------------------------------
-*Subtotal:* Rs ${subtotal}
-*TOTAL (COD):* Rs ${subtotal}
-================================================
-
-*Customer Name:* ${customerName}
-*Phone:* ${customerPhone}
-*Address:* ${customerAddress}
-
-================================================
-*Please call customer to VERIFY before dispatch.*
-Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
-
-                    const encodedMessage = encodeURIComponent(message);
-                    const waUrl = `https://wa.me/${AL_HANI_WHATSAPP_NUMBER}?text=${encodedMessage}`;
-                    window.open(waUrl, '_blank');
-
-                    // Pure frontend success flow
-                    setSuccessOrder({
-                      id: `WA-${Math.floor(Math.random() * 1000000)}`,
-                      customerName,
-                      customerPhone,
-                      customerAddress,
-                      orderNotes: form.getValues('orderNotes') || null,
-                      items: cart,
-                      subtotal: subtotal,
-                      deliveryFee: 150,
-                      total: subtotal,
-                      status: 'pending',
-                      createdAt: new Date().toISOString()
-                    });
-                    setOrderSuccess(true);
-                    clearCart();
-                    form.reset();
-                    toast({
-                      title: "Order Processed!",
-                      description: "WhatsApp message generated and cart cleared.",
-                    });
-                  }}
+                  type="submit"
+                  form="order-form"
                   disabled={cart.length === 0}
                   className="w-full py-4 rounded-full font-bold text-lg transition shadow-lg hover:scale-[1.02] active:scale-95"
                   style={{ backgroundColor: '#25D366', color: '#fff' }}

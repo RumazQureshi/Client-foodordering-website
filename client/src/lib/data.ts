@@ -1,4 +1,4 @@
-import type { MenuItem } from '@shared/schema';
+import type { MenuItem } from './types';
 
 export const MENU_ITEMS: MenuItem[] = [
   // Burgers

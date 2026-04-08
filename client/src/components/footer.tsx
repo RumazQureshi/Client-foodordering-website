@@ -1,5 +1,5 @@
-import { Utensils, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
-import { SiWhatsapp } from 'react-icons/si';
+import { Utensils, Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react';
+import { SiWhatsapp, SiTiktok } from 'react-icons/si';
 
 export function Footer() {
   const scrollToSection = (sectionId: string) => {
@@ -74,17 +74,22 @@ export function Footer() {
                 <Phone className="text-primary mr-2 w-4 h-4 mt-1" />
                 <div>
                   <p>+92 311 2652126</p>
-                  <p>+92 312 2684096</p>
                 </div>
               </li>
               <li className="flex items-center">
                 <Mail className="text-primary mr-2 w-4 h-4" />
                 info@alhanifastfood.com
               </li>
-              <li className="flex items-center">
-                <MapPin className="text-primary mr-2 w-4 h-4" />
-                Coast Guard Chowrangi, Korangi
-                Karachi, Pakistan
+              <li className="flex items-start">
+                <MapPin className="text-primary mr-2 w-4 h-4 mt-1" />
+                <a 
+                  href="https://maps.app.goo.gl/1Xfz5cVZDHbEEjQSA"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  Click here to visit live location
+                </a>
               </li>
             </ul>
           </div>
@@ -93,19 +98,19 @@ export function Footer() {
             <h4 className="text-lg font-bold text-primary mb-4">Opening Hours</h4>
             <ul className="space-y-2 text-sm text-muted">
               <li>Monday - Sunday</li>
-              <li>11:00 AM - 11:00 PM</li>
+              <li>4:00 PM - 4:00 AM</li>
               <li className="text-primary font-semibold">We're Open Every Day!</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-border pt-8 flex flex-col items-center md:flex-row md:justify-between text-center md:text-left">
           <p className="text-muted text-sm mb-4 md:mb-0">
             &copy; 2026-2030 AL-Hani Fast Food. All rights reserved.
           </p>
           <div className="flex space-x-4">
             <a 
-              href="https://www.facebook.com/rumazqureshi" 
+              href="https://www.facebook.com/share/1JFYRYqgWp/" 
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
@@ -114,7 +119,7 @@ export function Footer() {
               <Facebook className="w-5 h-5" />
             </a>
             <a 
-              href="https://www.instagram.com/rumaznaveed/" 
+              href="https://www.instagram.com/asim9530?igsh=MWZwYWd3NGFiNWFw" 
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
@@ -123,16 +128,16 @@ export function Footer() {
               <Instagram className="w-5 h-5" />
             </a>
             <a 
-              href="https://x.com/rasinnovatech" 
+              href="https://www.tiktok.com/@muhammadaasim36?_r=1&_t=ZN-95MWHUonZMU" 
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"
-              data-testid="footer-social-twitter"
+              data-testid="footer-social-tiktok"
             >
-              <Twitter className="w-5 h-5" />
+              <SiTiktok className="w-4 h-4" />
             </a>
             <a 
-              href="https://wa.me/923122684096" 
+              href="https://wa.me/923112652126" 
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted hover:text-primary transition"

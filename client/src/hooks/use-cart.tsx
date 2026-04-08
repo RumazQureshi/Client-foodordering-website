@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, createContext, type ReactNode } from 'react';
-import type { MenuItem } from '@shared/schema';
+import type { MenuItem } from '@/lib/types';
 
 export interface CartItem extends MenuItem {
   quantity: number;

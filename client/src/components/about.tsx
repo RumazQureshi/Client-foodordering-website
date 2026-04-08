@@ -20,7 +20,7 @@ export function About() {
             <p className="text-lg text-muted">Our Story of Flavor & Excellence</p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-16">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -28,10 +28,10 @@ export function About() {
               transition={{ duration: 0.8 }}
             >
               <img 
-                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=600&fit=crop" 
-                alt="Restaurant Interior" 
-                className="rounded-2xl shadow-glow w-full h-auto transition-transform duration-500 hover:scale-105"
-                data-testid="restaurant-image"
+                src="/owner.png" 
+                alt="Al-Hani Fast Food Owner" 
+                className="rounded-2xl shadow-glow w-full h-[500px] object-cover object-top transition-transform duration-500 hover:scale-[1.02]"
+                data-testid="owner-image"
               />
             </motion.div>
             <motion.div
@@ -40,7 +40,7 @@ export function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h3 className="text-3xl font-bold text-primary mb-6">Our Journey</h3>
+              <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6">Our Journey</h3>
               <p className="text-muted mb-4 leading-relaxed">
                 AL-Hani Fast Food began with a simple vision: to serve delicious, high-quality fast food that brings people together. What started as a small family kitchen has grown into a beloved local favorite, known for our commitment to freshness and flavor.
               </p>
@@ -67,7 +67,7 @@ export function About() {
                 }
               }
             }}
-            className="grid sm:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8"
           >
             {[
               { icon: Leaf, title: "Fresh Ingredients", desc: "We source the freshest items daily to ensure every meal is of the highest quality." },

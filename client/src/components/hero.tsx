@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
-import type { MenuItem } from '@shared/schema';
+import { useToast } from '@/hooks/use-toast';
+import { MENU_ITEMS } from '@/lib/data';
+import type { MenuItem } from '@/lib/types';
 import { Star } from 'lucide-react';
 
 export function Hero() {
   const { addToCart } = useCart();
-  const { data: menuItems = [] } = useQuery<MenuItem[]>({
-    queryKey: ['/api/menu'],
-  });
+  const { toast } = useToast();
+  const menuItems = MENU_ITEMS;
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -58,6 +58,10 @@ export function Hero() {
     const item = menuItems.find(i => i.name.toLowerCase() === itemName.toLowerCase());
     if (item) {
       addToCart(item);
+      toast({
+        title: "Added to Cart",
+        description: `${item.name} has been added to your cart.`,
+      });
     }
 
     // 1. Dispatch event to Menu component
@@ -111,7 +115,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold font-poppins mb-6"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-poppins mb-6 px-4"
           >
             <span className="text-primary">AL-Hani</span>
             <span className="text-foreground"> Fast Food</span>
@@ -121,7 +125,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-2xl md:text-3xl text-primary font-semibold mb-4" 
+            className="text-xl md:text-2xl lg:text-3xl text-primary font-semibold mb-4 px-4" 
             data-testid="hero-tagline"
           >
             Taste That Speaks for Itself!
@@ -131,7 +135,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="text-lg md:text-xl text-muted mb-12 max-w-3xl mx-auto"
+            className="text-base md:text-lg lg:text-xl text-muted mb-12 max-w-3xl mx-auto px-6 whitespace-normal"
           >
             Experience the perfect blend of authentic flavors and fast service. From our signature Zinger Burgers to our famous Shapatar Roll, every bite is a celebration!
           </motion.p>
@@ -245,7 +249,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
             className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl p-8 border-2 border-primary/50 relative overflow-hidden group shadow-glow mb-12"
             data-testid="shapatar-roll-highlight"
           >
@@ -260,8 +264,8 @@ export function Hero() {
                 <span className="mr-2">⭐</span>New Arrival
               </span>
             </motion.div>
-            <h2 className="text-3xl md:text-5xl font-bold text-primary mb-4">Shapatar Roll</h2>
-            <p className="text-xl md:text-2xl text-foreground font-semibold mb-3">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-primary mb-4">Shapatar Roll</h2>
+            <p className="text-lg md:text-2xl text-foreground font-semibold mb-3">
               Rolled in Foil, 24 Inches of Flavor!
             </p>
             <p className="text-muted max-w-2xl mx-auto mb-6">
@@ -274,6 +278,10 @@ export function Hero() {
                 const shapatar = menuItems.find(item => item.name.toLowerCase().includes('shapatar'));
                 if (shapatar) {
                   addToCart(shapatar);
+                  toast({
+                    title: "Added to Cart",
+                    description: `${shapatar.name} has been added to your cart.`,
+                  });
                 }
                 scrollToSection('order');
               }}

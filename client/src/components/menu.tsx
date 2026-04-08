@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/hooks/use-cart';
+import { useToast } from '@/hooks/use-toast';
 import { MENU_ITEMS } from '@/lib/data';
-import type { MenuItem } from '@shared/schema';
+import type { MenuItem } from '@/lib/types';
 
 export function Menu() {
   const [activeCategory, setActiveCategory] = useState('all');
   const { addToCart } = useCart();
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleSelectCategory = (event: any) => {
@@ -44,6 +45,10 @@ export function Menu() {
 
   const handleAddToCart = (item: MenuItem) => {
     addToCart(item);
+    toast({
+      title: "Added to Cart",
+      description: `${item.name} has been added to your cart.`,
+    });
     // Add visual feedback
     const button = document.querySelector(`[data-item-id="${item.id}"]`);
     if (button) {
@@ -68,7 +73,7 @@ export function Menu() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0"
         >
           {categories.map(category => (
             <Button
@@ -90,7 +95,7 @@ export function Menu() {
         {/* Menu Items Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-2 sm:px-0"
         >
           <AnimatePresence mode="popLayout">
             {filteredItems.length === 0 ? (
