@@ -36,27 +36,6 @@ export function Contact() {
     },
   });
 
-  const contactMutation = useMutation({
-    mutationFn: async (contactData: ContactFormData) => {
-      const response = await apiRequest('POST', '/api/contact', contactData);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Message Sent Successfully!",
-        description: "We'll get back to you soon.",
-      });
-      form.reset();
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to Send Message",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
-      console.error('Contact error:', error);
-    },
-  });
 
   const onSubmit = (data: ContactFormData) => {
     const message = `*NEW CONTACT MESSAGE -- AL-HANI FAST FOOD*
@@ -72,7 +51,11 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
     const waUrl = `https://wa.me/${AL_HANI_WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodedMessage}`;
     window.open(waUrl, '_blank');
 
-    contactMutation.mutate(data);
+    toast({
+      title: "WhatsApp Opened!",
+      description: "Complete sending your message in WhatsApp.",
+    });
+    form.reset();
   };
 
   return (
@@ -164,19 +147,12 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                     />
                     <Button
                       type="submit"
-                      disabled={contactMutation.isPending}
                       className="w-full glow-btn text-white py-4 rounded-full font-bold text-lg transition shadow-lg hover:scale-105 active:scale-95 border-none"
                       style={{ backgroundColor: '#25D366' }}
                       data-testid="send-message-button"
                     >
-                      {contactMutation.isPending ? (
-                        <>🔄 Sending...</>
-                      ) : (
-                        <>
-                          <SiWhatsapp className="w-5 h-5 mr-2" />
-                          Send via WhatsApp
-                        </>
-                      )}
+                      <SiWhatsapp className="w-5 h-5 mr-2" />
+                      Send via WhatsApp
                     </Button>
                   </form>
                 </Form>

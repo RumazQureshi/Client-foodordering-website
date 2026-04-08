@@ -46,57 +46,10 @@ export function Order() {
     },
   });
 
-  const createOrderMutation = useMutation({
-    mutationFn: async (orderData: any) => {
-      const response = await apiRequest('POST', '/api/orders', orderData);
-      return response.json();
-    },
-    onSuccess: (order: Order) => {
-      setSuccessOrder(order);
-      setOrderSuccess(true);
-      clearCart();
-      form.reset();
-      toast({
-        title: "Order Placed Successfully!",
-        description: "We'll deliver your food shortly.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Order Failed",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
-      console.error('Order error:', error);
-    },
-  });
 
   const onSubmit = (data: OrderFormData) => {
-    if (cart.length === 0) {
-      toast({
-        title: "Cart is Empty",
-        description: "Please add items to your cart before placing an order.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const orderData = {
-      ...data,
-      items: cart.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        total: item.price * item.quantity
-      })),
-      subtotal: getSubtotal(),
-      deliveryFee: 150,
-      total: getTotal(),
-      status: 'pending',
-    };
-
-    createOrderMutation.mutate(orderData);
+    // This function is still used to trigger validation
+    form.trigger();
   };
 
   const subtotal = getSubtotal();
@@ -346,6 +299,28 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                     const encodedMessage = encodeURIComponent(message);
                     const waUrl = `https://wa.me/${AL_HANI_WHATSAPP_NUMBER}?text=${encodedMessage}`;
                     window.open(waUrl, '_blank');
+
+                    // Pure frontend success flow
+                    setSuccessOrder({
+                      id: `WA-${Math.floor(Math.random() * 1000000)}`,
+                      customerName,
+                      customerPhone,
+                      customerAddress,
+                      orderNotes: form.getValues('orderNotes') || null,
+                      items: cart,
+                      subtotal: subtotal,
+                      deliveryFee: 150,
+                      total: subtotal,
+                      status: 'pending',
+                      createdAt: new Date().toISOString()
+                    });
+                    setOrderSuccess(true);
+                    clearCart();
+                    form.reset();
+                    toast({
+                      title: "Order Processed!",
+                      description: "WhatsApp message generated and cart cleared.",
+                    });
                   }}
                   disabled={cart.length === 0}
                   className="w-full py-4 rounded-full font-bold text-lg transition shadow-lg hover:scale-[1.02] active:scale-95"

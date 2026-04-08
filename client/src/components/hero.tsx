@@ -245,7 +245,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 1.2 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
             className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl p-8 border-2 border-primary/50 relative overflow-hidden group shadow-glow mb-12"
             data-testid="shapatar-roll-highlight"
           >

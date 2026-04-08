@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/hooks/use-cart';
+import { MENU_ITEMS } from '@/lib/data';
 import type { MenuItem } from '@shared/schema';
 
 export function Menu() {
@@ -24,9 +25,8 @@ export function Menu() {
     return () => window.removeEventListener('select-menu-category', handleSelectCategory);
   }, []);
 
-  const { data: menuItems = [], isLoading } = useQuery<MenuItem[]>({
-    queryKey: ['/api/menu'],
-  });
+  const menuItems = MENU_ITEMS;
+  const isLoading = false;
 
   const categories = [
     { id: 'all', label: 'All Items' },
@@ -93,29 +93,7 @@ export function Menu() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
           <AnimatePresence mode="popLayout">
-            {isLoading ? (
-              // Loading skeletons
-              Array.from({ length: 8 }).map((_, index) => (
-                <motion.div
-                  key={`skeleton-${index}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <Card className="bg-card shadow-card overflow-hidden">
-                    <Skeleton className="w-full h-48" />
-                    <CardContent className="p-5">
-                      <Skeleton className="h-6 w-3/4 mb-2" />
-                      <Skeleton className="h-4 w-full mb-4" />
-                      <div className="flex items-center justify-between">
-                        <Skeleton className="h-8 w-20" />
-                        <Skeleton className="h-10 w-20" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))
-            ) : filteredItems.length === 0 ? (
+            {filteredItems.length === 0 ? (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
