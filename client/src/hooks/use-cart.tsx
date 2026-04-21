@@ -7,7 +7,7 @@ export interface CartItem extends MenuItem {
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (item: MenuItem) => void;
+  addToCart: (item: MenuItem, quantity?: number) => void;
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, change: number) => void;
   clearCart: () => void;
@@ -22,17 +22,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Cart state initialization - now volatile (starts empty on refresh)
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (item: MenuItem, quantity: number = 1) => {
     setCart(prevCart => {
       const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
       if (existingItem) {
         return prevCart.map(cartItem =>
           cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            ? { ...cartItem, quantity: cartItem.quantity + quantity }
             : cartItem
         );
       } else {
-        return [...prevCart, { ...item, quantity: 1 }];
+        return [...prevCart, { ...item, quantity }];
       }
     });
   };

@@ -1,7 +1,10 @@
 import { Utensils, Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react';
 import { SiWhatsapp, SiTiktok } from 'react-icons/si';
+import { useLanguage } from '@/hooks/use-language';
 
 export function Footer() {
+  const { t, isRtl } = useLanguage();
+  
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -12,103 +15,103 @@ export function Footer() {
   return (
     <footer className="bg-secondary border-t border-border py-12" data-testid="footer">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <div className="flex items-center space-x-3 mb-4">
+        <div className={`grid md:grid-cols-4 gap-8 mb-8 ${isRtl ? 'text-right' : 'text-left'}`}>
+          <div className={isRtl ? 'order-1 md:order-1' : ''}>
+            <div className={`flex items-center space-x-3 mb-4 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
               <div className="w-10 h-10 bg-transparent rounded-full flex items-center justify-center overflow-hidden">
                 <img src="/logo.png" alt="AL-Hani Logo" className="w-full h-full object-contain" />
               </div>
-              <h3 className="text-xl font-bold text-primary">AL-Hani Fast Food</h3>
+              <h3 className="text-xl font-bold text-primary">{t('hero.title')} {t('hero.subtitle')}</h3>
             </div>
             <p className="text-muted text-sm">
-              Taste That Speaks for Itself! Serving delicious fast food with love since 2020.
+              {t('footer.tagline')}
             </p>
           </div>
 
-          <div>
-            <h4 className="text-lg font-bold text-primary mb-4">Quick Links</h4>
+          <div className={isRtl ? 'order-2 md:order-2' : ''}>
+            <h4 className="text-lg font-bold text-primary mb-4">{t('footer.links')}</h4>
             <ul className="space-y-2">
               <li>
                 <button 
                   onClick={() => scrollToSection('menu')}
-                  className="text-muted hover:text-primary transition text-sm text-left"
+                  className={`text-muted hover:text-primary transition text-sm w-full ${isRtl ? 'text-right' : 'text-left'}`}
                   data-testid="footer-menu-link"
                 >
-                  Menu
+                  {t('nav.menu')}
                 </button>
               </li>
               <li>
                 <button 
                   onClick={() => scrollToSection('order')}
-                  className="text-muted hover:text-primary transition text-sm text-left"
+                  className={`text-muted hover:text-primary transition text-sm w-full ${isRtl ? 'text-right' : 'text-left'}`}
                   data-testid="footer-order-link"
                 >
-                  Order Online
+                  {t('nav.order')}
                 </button>
               </li>
               <li>
                 <button 
                   onClick={() => scrollToSection('about')}
-                  className="text-muted hover:text-primary transition text-sm text-left"
+                  className={`text-muted hover:text-primary transition text-sm w-full ${isRtl ? 'text-right' : 'text-left'}`}
                   data-testid="footer-about-link"
                 >
-                  About Us
+                  {t('nav.about')}
                 </button>
               </li>
               <li>
                 <button 
                   onClick={() => scrollToSection('contact')}
-                  className="text-muted hover:text-primary transition text-sm text-left"
+                  className={`text-muted hover:text-primary transition text-sm w-full ${isRtl ? 'text-right' : 'text-left'}`}
                   data-testid="footer-contact-link"
                 >
-                  Contact
+                  {t('nav.contact')}
                 </button>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-lg font-bold text-primary mb-4">Contact Info</h4>
+          <div className={isRtl ? 'order-3 md:order-3' : ''}>
+            <h4 className="text-lg font-bold text-primary mb-4">{t('footer.contact')}</h4>
             <ul className="space-y-2 text-sm text-muted">
-              <li className="flex items-start">
-                <Phone className="text-primary mr-2 w-4 h-4 mt-1" />
-                <div>
+              <li className={`flex items-start ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <Phone className={`text-primary w-4 h-4 mt-1 ${isRtl ? 'ml-2' : 'mr-2'}`} />
+                <div dir="ltr">
                   <p>+92 311 2652126</p>
                 </div>
               </li>
-              <li className="flex items-center">
-                <Mail className="text-primary mr-2 w-4 h-4" />
-                info@alhanifastfood.com
+              <li className={`flex items-center ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <Mail className={`text-primary w-4 h-4 ${isRtl ? 'ml-2' : 'mr-2'}`} />
+                <span dir="ltr">info@alhanifastfood.com</span>
               </li>
-              <li className="flex items-start">
-                <MapPin className="text-primary mr-2 w-4 h-4 mt-1" />
+              <li className={`flex items-start ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <MapPin className={`text-primary w-4 h-4 mt-1 ${isRtl ? 'ml-2' : 'mr-2'}`} />
                 <a 
                   href="https://maps.app.goo.gl/1Xfz5cVZDHbEEjQSA"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
                 >
-                  Click here to visit live location
+                  {t('footer.visit')}
                 </a>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-lg font-bold text-primary mb-4">Opening Hours</h4>
+          <div className={isRtl ? 'order-4 md:order-4' : ''}>
+            <h4 className="text-lg font-bold text-primary mb-4">{t('footer.hours')}</h4>
             <ul className="space-y-2 text-sm text-muted">
-              <li>Monday - Sunday</li>
-              <li>4:00 PM - 4:00 AM</li>
-              <li className="text-primary font-semibold">We're Open Every Day!</li>
+              <li>{t('footer.days')}</li>
+              <li dir="ltr">{t('footer.time')}</li>
+              <li className="text-primary font-semibold">{t('footer.open')}</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col items-center md:flex-row md:justify-between text-center md:text-left">
+        <div className={`border-t border-border pt-8 flex flex-col items-center md:flex-row md:justify-between text-center md:text-left ${isRtl ? 'md:flex-row-reverse' : ''}`}>
           <p className="text-muted text-sm mb-4 md:mb-0">
-            &copy; 2026-2030 AL-Hani Fast Food. All rights reserved.
+            &copy; 2026-2030 {t('hero.title')} {t('hero.subtitle')}. {t('footer.rights')}
           </p>
-          <div className="flex space-x-4">
+          <div className={`flex space-x-4 ${isRtl ? 'space-x-reverse' : ''}`}>
             <a 
               href="https://www.facebook.com/share/1JFYRYqgWp/" 
               target="_blank"

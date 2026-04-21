@@ -1,10 +1,13 @@
 export interface MenuItem {
   id: string;
   name: string;
+  nameUr: string;
   category: string;
   price: number;
   image: string;
   description: string;
+  descriptionUr: string;
+  isHot?: boolean;
 }
 
 export interface Order {

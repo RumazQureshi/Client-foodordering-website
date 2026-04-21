@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,6 +40,7 @@
   --font-serif: Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-poppins: 'Poppins', sans-serif;
+  --font-urdu: 'Noto Nastaliq Urdu', serif;
   --radius: 1rem;
   --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.5);
   --shadow-glow-lg: 0 0 40px rgba(255, 215, 0, 0.6);
@@ -149,6 +150,13 @@
 
   .animate-marquee:hover {
     animation-play-state: paused;
+  }
+}
+
+@layer utilities {
+  .font-urdu {
+    font-family: var(--font-urdu);
+    line-height: 1.8;
   }
 }
 

@@ -8,22 +8,24 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/use-language';
 import { Send, Phone, Mail, Clock, MapPin, Facebook, Instagram } from 'lucide-react';
 import { SiWhatsapp, SiTiktok } from 'react-icons/si';
 
 const AL_HANI_WHATSAPP_NUMBER = '+923112652126';
 
-const contactFormSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
-});
-
-type ContactFormData = z.infer<typeof contactFormSchema>;
-
 export function Contact() {
   const { toast } = useToast();
+  const { t, isRtl } = useLanguage();
   
+  const contactFormSchema = z.object({
+    name: z.string().min(2, isRtl ? 'نام کم از کم 2 حروف کا ہونا چاہیے' : 'Name must be at least 2 characters'),
+    email: z.string().email(isRtl ? 'براہ کرم ایک درست ای میل پتہ درج کریں' : 'Please enter a valid email address'),
+    message: z.string().min(10, isRtl ? 'پیغام کم از کم 10 حروف کا ہونا چاہیے' : 'Message must be at least 10 characters'),
+  });
+
+  type ContactFormData = z.infer<typeof contactFormSchema>;
+
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -35,7 +37,16 @@ export function Contact() {
 
 
   const onSubmit = (data: ContactFormData) => {
-    const message = `*NEW CONTACT MESSAGE -- AL-HANI FAST FOOD*
+    const message = isRtl 
+      ? `*رابطہ پیغام -- الحانی فاسٹ فوڈ*
+================================================
+*نام:* ${data.name}
+*ای میل:* ${data.email}
+*پیغام:* 
+${data.message}
+================================================
+تصدیق شدہ بذریعہ: RAS Innovatech | الحانی فاسٹ فوڈ آفیشل`
+      : `*NEW CONTACT MESSAGE -- AL-HANI FAST FOOD*
 ================================================
 *Name:* ${data.name}
 *Email:* ${data.email}
@@ -49,8 +60,8 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
     window.open(waUrl, '_blank');
 
     toast({
-      title: "WhatsApp Opened!",
-      description: "Complete sending your message in WhatsApp.",
+      title: t('contact.toastTitle'),
+      description: t('contact.toastDesc'),
     });
     form.reset();
   };
@@ -65,23 +76,24 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold font-poppins text-primary mb-4">Get In Touch</h2>
+          <h2 className="text-4xl md:text-5xl font-bold font-poppins text-primary mb-4">{t('contact.title')}</h2>
           <p className="text-lg text-muted max-w-2xl mx-auto">
-            Have questions or feedback? We'd love to hear from you!
+            {t('contact.subtitle')}
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className={`grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto ${isRtl ? 'lg:flex-row-reverse' : ''}`}>
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: isRtl ? 30 : -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className={isRtl ? 'order-2 lg:order-1' : ''}
           >
             <Card className="bg-card shadow-card border-none hover:shadow-glow transition-shadow duration-300">
-              <CardHeader className="text-center sm:text-left">
-                <CardTitle className="text-2xl font-bold text-primary">Send us a Message</CardTitle>
+              <CardHeader className={isRtl ? 'text-right' : 'text-left'}>
+                <CardTitle className="text-2xl font-bold text-primary">{t('contact.formTitle')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
@@ -91,16 +103,16 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-muted font-semibold">Name *</FormLabel>
+                          <FormLabel className={`text-muted font-semibold w-full block ${isRtl ? 'text-right' : ''}`}>{t('contact.name')}</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
-                              placeholder="Your name"
-                              className="bg-secondary border border-border focus:border-primary transition-all"
+                              placeholder={t('contact.placeholder.name')}
+                              className={`bg-secondary border border-border focus:border-primary transition-all ${isRtl ? 'text-right' : ''}`}
                               data-testid="contact-name-input"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className={isRtl ? 'text-right' : ''} />
                         </FormItem>
                       )}
                     />
@@ -109,17 +121,17 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-muted font-semibold">Email *</FormLabel>
+                          <FormLabel className={`text-muted font-semibold w-full block ${isRtl ? 'text-right' : ''}`}>{t('contact.email')}</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               type="email"
-                              placeholder="your@email.com"
-                              className="bg-secondary border border-border focus:border-primary transition-all"
+                              placeholder={t('contact.placeholder.email')}
+                              className={`bg-secondary border border-border focus:border-primary transition-all ${isRtl ? 'text-right' : ''}`}
                               data-testid="contact-email-input"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className={isRtl ? 'text-right' : ''} />
                         </FormItem>
                       )}
                     />
@@ -128,17 +140,17 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                       name="message"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-muted font-semibold">Message *</FormLabel>
+                          <FormLabel className={`text-muted font-semibold w-full block ${isRtl ? 'text-right' : ''}`}>{t('contact.message')}</FormLabel>
                           <FormControl>
                             <Textarea
                               {...field}
                               rows={5}
-                              placeholder="Your message..."
-                              className="bg-secondary border border-border focus:border-primary transition-all"
+                              placeholder={t('contact.placeholder.message')}
+                              className={`bg-secondary border border-border focus:border-primary transition-all ${isRtl ? 'text-right' : ''}`}
                               data-testid="contact-message-input"
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className={isRtl ? 'text-right' : ''} />
                         </FormItem>
                       )}
                     />
@@ -148,8 +160,8 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
                       style={{ backgroundColor: '#25D366' }}
                       data-testid="send-message-button"
                     >
-                      <SiWhatsapp className="w-5 h-5 mr-2" />
-                      Send via WhatsApp
+                      <SiWhatsapp className={`w-5 h-5 ${isRtl ? 'ml-2' : 'mr-2'}`} />
+                      {t('contact.whatsapp')}
                     </Button>
                   </form>
                 </Form>
@@ -158,11 +170,11 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
           </motion.div>
 
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: isRtl ? -30 : 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="space-y-8"
+            className={`space-y-8 ${isRtl ? 'order-1 lg:order-2' : ''}`}
           >
             {/* Google Map */}
             <Card className="bg-card shadow-card overflow-hidden border-none cursor-pointer group h-64">
@@ -181,52 +193,52 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
 
             {/* Contact Details */}
             <Card className="bg-card shadow-card border-none hover:shadow-glow transition-all duration-300 px-4 sm:px-0">
-              <CardContent className="p-8 space-y-6">
-                <div className="flex items-start space-x-4 group">
+              <CardContent className={`p-8 space-y-6 ${isRtl ? 'text-right' : ''}`}>
+                <div className={`flex items-start group ${isRtl ? 'flex-row-reverse space-x-reverse' : 'space-x-4'}`}>
                   <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary/40">
                     <MapPin className="text-primary text-xl" />
                   </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-primary mb-1">Location</h4>
+                  <div className={isRtl ? 'mr-4' : ''}>
+                    <h4 className="text-lg font-bold text-primary mb-1">{t('contact.location')}</h4>
                     <a 
                       href="https://maps.app.goo.gl/1Xfz5cVZDHbEEjQSA"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted hover:text-primary transition-colors font-medium border-b border-primary/20 hover:border-primary"
                     >
-                      Al Hani Broast on google maps
+                      {isRtl ? 'گوگل میپس پر الحانی بروسٹ' : 'Al Hani Broast on google maps'}
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 group">
+                <div className={`flex items-start group ${isRtl ? 'flex-row-reverse space-x-reverse' : 'space-x-4'}`}>
                   <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary/40">
                     <Phone className="text-primary text-xl" />
                   </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-primary mb-1">Phone</h4>
-                    <p className="text-muted">+92 311 2652126</p>
+                  <div className={isRtl ? 'mr-4' : ''}>
+                    <h4 className="text-lg font-bold text-primary mb-1">{t('contact.phone')}</h4>
+                    <p className="text-muted" dir="ltr">+92 311 2652126</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 group">
+                <div className={`flex items-start group ${isRtl ? 'flex-row-reverse space-x-reverse' : 'space-x-4'}`}>
                   <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary/40">
                     <Mail className="text-primary text-xl" />
                   </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-primary mb-1">Email</h4>
+                  <div className={isRtl ? 'mr-4' : ''}>
+                    <h4 className="text-lg font-bold text-primary mb-1">{t('contact.emailLabel')}</h4>
                     <p className="text-muted">info@alhanifastfood.com</p>
                     <p className="text-muted">orders@alhanifastfood.com</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 group">
+                <div className={`flex items-start group ${isRtl ? 'flex-row-reverse space-x-reverse' : 'space-x-4'}`}>
                   <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary/40">
                     <Clock className="text-primary text-xl" />
                   </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-primary mb-1">Hours</h4>
-                    <p className="text-muted">Mon - Sun: 11:00 AM - 11:00 PM</p>
+                  <div className={isRtl ? 'mr-4' : ''}>
+                    <h4 className="text-lg font-bold text-primary mb-1">{t('contact.hours')}</h4>
+                    <p className="text-muted">{t('footer.days')}: {t('footer.time')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -235,8 +247,8 @@ Verified by: RAS Innovatech | AL-Hani Fast Food Official`;
             {/* Social Media */}
             <Card className="bg-card shadow-card border-none">
               <CardContent className="p-8 text-center sm:text-left">
-                <h4 className="text-xl font-bold text-primary mb-4">Follow Us</h4>
-                <div className="flex justify-center sm:justify-start space-x-4">
+                <h4 className={`text-xl font-bold text-primary mb-4 ${isRtl ? 'text-right' : ''}`}>{t('contact.follow')}</h4>
+                <div className={`flex justify-center sm:justify-start space-x-4 ${isRtl ? 'flex-row-reverse space-x-reverse' : ''}`}>
                   {[
                     { icon: Facebook, id: "social-facebook", href: "https://www.facebook.com/share/1JFYRYqgWp/" },
                     { icon: Instagram, id: "social-instagram", href: "https://www.instagram.com/asim9530?igsh=MWZwYWd3NGFiNWFw" },

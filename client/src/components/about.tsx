@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Leaf, Zap, Star } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
 
 export function About() {
+  const { t, isRtl } = useLanguage();
+  
   return (
     <section id="about" className="py-20 bg-secondary/50" data-testid="about-section">
       <div className="container mx-auto px-4 lg:px-8">
@@ -15,17 +18,18 @@ export function About() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold font-poppins text-primary mb-4">
-              About AL-Hani Fast Food
+              {t('about.title')}
             </h2>
-            <p className="text-lg text-muted">Our Story of Flavor & Excellence</p>
+            <p className="text-lg text-muted">{t('about.subtitle')}</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-16">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: isRtl ? 50 : -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className={isRtl ? 'order-2 md:order-1' : ''}
             >
               <img 
                 src="/owner.png" 
@@ -35,20 +39,21 @@ export function About() {
               />
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: isRtl ? -50 : 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              className={`${isRtl ? 'order-1 md:order-2 text-right' : 'text-left'}`}
             >
-              <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6">Our Journey</h3>
+              <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6">{t('about.journey.title')}</h3>
               <p className="text-muted mb-4 leading-relaxed">
-                AL-Hani Fast Food began with a simple vision: to serve delicious, high-quality fast food that brings people together. What started as a small family kitchen has grown into a beloved local favorite, known for our commitment to freshness and flavor.
+                {t('about.journey.p1')}
               </p>
               <p className="text-muted mb-4 leading-relaxed">
-                Every dish we serve is crafted with care, using the finest ingredients and time-tested recipes. From our signature Zinger Burgers to our innovative Shapatar Roll, we believe that great food should be both fast and exceptional.
+                {t('about.journey.p2')}
               </p>
               <p className="text-muted leading-relaxed">
-                Our success is built on three core principles: <span className="text-primary font-semibold">Fresh Ingredients</span>, <span className="text-primary font-semibold">Fast Service</span>, and <span className="text-primary font-semibold">Unforgettable Taste</span>.
+                {t('about.journey.p3')} <span className="text-primary font-semibold">{t('about.fresh')}</span>, <span className="text-primary font-semibold">{t('about.service')}</span>, {isRtl ? 'اور' : 'and'} <span className="text-primary font-semibold">{t('about.taste')}</span>.
               </p>
             </motion.div>
           </div>
@@ -70,9 +75,9 @@ export function About() {
             className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8"
           >
             {[
-              { icon: Leaf, title: "Fresh Ingredients", desc: "We source the freshest items daily to ensure every meal is of the highest quality." },
-              { icon: Zap, title: "Fast Service", desc: "Quick preparation and delivery without compromising on quality or taste." },
-              { icon: Star, title: "Great Taste", desc: "Recipes perfected over years to deliver flavors that keep you coming back." }
+              { icon: Leaf, title: t('about.fresh'), desc: t('about.fresh.desc') },
+              { icon: Zap, title: t('about.service'), desc: t('about.service.desc') },
+              { icon: Star, title: t('about.taste'), desc: t('about.taste.desc') }
             ].map((value, index) => (
               <motion.div
                 key={index}

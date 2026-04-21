@@ -4,6 +4,8 @@ import { CartProvider } from "@/hooks/use-cart";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 
+import { LanguageProvider } from "@/hooks/use-language";
+
 function Router() {
   return (
     <Switch>
@@ -15,10 +17,12 @@ function Router() {
 
 function App() {
   return (
-    <CartProvider>
-      <Toaster />
-      <Router />
-    </CartProvider>
+    <LanguageProvider>
+      <CartProvider>
+        <Toaster />
+        <Router />
+      </CartProvider>
+    </LanguageProvider>
   );
 }
 

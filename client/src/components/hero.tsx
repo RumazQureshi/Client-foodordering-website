@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/use-language';
 import { MENU_ITEMS } from '@/lib/data';
 import type { MenuItem } from '@/lib/types';
 import { Star } from 'lucide-react';
@@ -9,6 +10,7 @@ import { Star } from 'lucide-react';
 export function Hero() {
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { t, isRtl } = useLanguage();
   const menuItems = MENU_ITEMS;
 
   const scrollToSection = (sectionId: string) => {
@@ -20,47 +22,47 @@ export function Hero() {
 
   const featuredItems = [
     {
-      name: 'Zinger Burger',
-      description: 'Crispy & Spicy',
+      name: t('hero.featured.zinger'),
+      description: t('hero.featured.zingerDesc'),
       category: 'burgers',
       image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop'
     },
     {
-      name: 'Club Sandwich',
-      description: 'Triple Decker Delight',
+      name: t('hero.featured.club'),
+      description: t('hero.featured.clubDesc'),
       category: 'sandwiches',
       image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=300&fit=crop'
     },
     {
-      name: 'Shawarma Roll',
-      description: 'Authentic Flavors',
+      name: t('hero.featured.shawarma'),
+      description: t('hero.featured.shawarmaDesc'),
       category: 'rolls',
       image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&h=300&fit=crop'
     },
     {
-      name: 'Fresh Pizza',
-      description: 'Loaded with Cheese',
+      name: t('hero.featured.pizza'),
+      description: t('hero.featured.pizzaDesc'),
       category: 'pizzas',
       image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop'
     }
   ];
-
+ 
   const testimonials = [
-    { text: "Best Zinger in Korangi! The taste is unmatched.", author: "Ali R.", rating: 5 },
-    { text: "The Shapatar Roll is actually huge and delicious! Highly recommended.", author: "Sana M.", rating: 5 },
-    { text: "Fastest delivery service in the area. Food arrives hot every time.", author: "Usman K.", rating: 5 },
-    { text: "Quality ingredients and great value for money. My go-to spot.", author: "Fatima Z.", rating: 5 },
-    { text: "Club Sandwich is a masterpiece. Loaded with flavor!", author: "Hamza S.", rating: 5 }
+    { text: t('hero.test1.text'), author: t('hero.test1.author'), rating: 5 },
+    { text: t('hero.test2.text'), author: t('hero.test2.author'), rating: 5 },
+    { text: t('hero.test3.text'), author: t('hero.test3.author'), rating: 5 },
+    { text: t('hero.test4.text'), author: t('hero.test4.author'), rating: 5 },
+    { text: t('hero.test5.text'), author: t('hero.test5.author'), rating: 5 }
   ];
-
-  const handleItemClick = (category: string, itemName: string) => {
+ 
+  const handleItemClick = (category: string, itemName: string, originalName: string) => {
     // 0. Add to cart if found
-    const item = menuItems.find(i => i.name.toLowerCase() === itemName.toLowerCase());
+    const item = menuItems.find(i => i.name.toLowerCase() === originalName.toLowerCase());
     if (item) {
       addToCart(item);
       toast({
-        title: "Added to Cart",
-        description: `${item.name} has been added to your cart.`,
+        title: t('modal.toastTitle'),
+        description: `${isRtl ? item.nameUr : item.name} ${isRtl ? 'آپ کی کارٹ میں شامل کر دیا گیا ہے۔' : 'has been added to your cart.'}`,
       });
     }
 
@@ -115,29 +117,29 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-poppins mb-6 px-4"
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-poppins mb-4 sm:mb-6 px-4"
           >
-            <span className="text-primary">AL-Hani</span>
-            <span className="text-foreground"> Fast Food</span>
+            <span className="text-primary">{t('hero.title')}</span>
+            <span className="text-foreground text-nowrap sm:text-wrap"> {t('hero.subtitle')}</span>
           </motion.h1>
           
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="text-xl md:text-2xl lg:text-3xl text-primary font-semibold mb-4 px-4" 
+            className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-primary font-semibold mb-3 sm:mb-4 px-4" 
             data-testid="hero-tagline"
           >
-            Taste That Speaks for Itself!
+            {t('hero.tagline')}
           </motion.p>
           
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="text-base md:text-lg lg:text-xl text-muted mb-12 max-w-3xl mx-auto px-6 whitespace-normal"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-muted mb-8 sm:mb-12 max-w-3xl mx-auto px-6 whitespace-normal"
           >
-            Experience the perfect blend of authentic flavors and fast service. From our signature Zinger Burgers to our famous Shapatar Roll, every bite is a celebration!
+            {t('hero.description')}
           </motion.p>
           
           <motion.div 
@@ -150,19 +152,19 @@ export function Hero() {
               whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(var(--primary), 0.5)" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('menu')}
-              className="glow-btn bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-xl transition-all shadow-glow hover:shadow-glow-lg border-none cursor-pointer flex items-center justify-center"
+              className="glow-btn bg-primary text-primary-foreground px-8 py-3 sm:px-10 sm:py-4 rounded-full font-bold text-lg sm:text-xl transition-all shadow-glow hover:shadow-glow-lg border-none cursor-pointer flex items-center justify-center w-full sm:w-auto"
               data-testid="view-menu-button"
             >
-              <span className="mr-2 text-2xl">🍽️</span>View Menu
+              <span className={`text-xl sm:text-2xl ${isRtl ? 'ml-2' : 'mr-2'}`}>🍽️</span>{t('hero.viewMenu')}
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05, borderColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", backgroundColor: "hsl(var(--primary))" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('order')}
-              className="border-2 border-primary text-primary bg-transparent px-10 py-4 rounded-full font-bold text-xl transition-all shadow-lg hover:shadow-glow cursor-pointer flex items-center justify-center"
+              className="border-2 border-primary text-primary bg-transparent px-8 py-3 sm:px-10 sm:py-4 rounded-full font-bold text-lg sm:text-xl transition-all shadow-lg hover:shadow-glow cursor-pointer flex items-center justify-center w-full sm:w-auto"
               data-testid="order-now-button"
             >
-              <span className="mr-2 text-2xl">🛍️</span>Order Now
+              <span className={`text-xl sm:text-2xl ${isRtl ? 'ml-2' : 'mr-2'}`}>🛍️</span>{t('hero.orderNow')}
             </motion.button>
           </motion.div>
 
@@ -225,7 +227,7 @@ export function Hero() {
                   y: -25,
                   transition: { duration: 0.3 }
                 }}
-                onClick={() => handleItemClick(item.category, item.name)}
+                onClick={() => handleItemClick(item.category, item.name, ['Zinger Burger', 'Club Sandwich', 'Shawarma Roll', 'Fresh Pizza'][index])}
                 className="food-card bg-card rounded-2xl overflow-hidden shadow-card relative group cursor-pointer"
                 data-testid={`featured-item-${index}`}
               >
@@ -250,7 +252,7 @@ export function Hero() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.2 }}
-            className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl p-8 border-2 border-primary/50 relative overflow-hidden group shadow-glow mb-12"
+            className="bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl p-6 sm:p-8 border-2 border-primary/50 relative overflow-hidden group shadow-glow mb-12"
             data-testid="shapatar-roll-highlight"
           >
             <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
@@ -260,16 +262,16 @@ export function Hero() {
               transition={{ duration: 2, repeat: Infinity }}
               className="flex items-center justify-center mb-4"
             >
-              <span className="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider">
-                <span className="mr-2">⭐</span>New Arrival
+              <span className="bg-primary text-primary-foreground px-3 py-1 sm:px-4 sm:py-2 rounded-full text-[10px] sm:text-sm font-bold uppercase tracking-wider">
+                <span className={isRtl ? 'ml-2' : 'mr-2'}>⭐</span>{t('hero.newArrival')}
               </span>
             </motion.div>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-primary mb-4">Shapatar Roll</h2>
-            <p className="text-lg md:text-2xl text-foreground font-semibold mb-3">
-              Rolled in Foil, 24 Inches of Flavor!
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-primary mb-2 sm:mb-4">{t('hero.shapatarTitle')}</h2>
+            <p className="text-base sm:text-xl md:text-2xl text-foreground font-semibold mb-2 sm:mb-3">
+              {t('hero.shapatarDesc')}
             </p>
-            <p className="text-muted max-w-2xl mx-auto mb-6">
-              Our signature creation - a massive 24-inch roll packed with tender meat, fresh vegetables, and our secret sauce, all wrapped perfectly in foil for the ultimate portable feast.
+            <p className="text-sm sm:text-base md:text-lg text-muted max-w-2xl mx-auto mb-6">
+              {t('hero.shapatarDetail')}
             </p>
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(var(--primary), 0.5)" }}
@@ -279,16 +281,16 @@ export function Hero() {
                 if (shapatar) {
                   addToCart(shapatar);
                   toast({
-                    title: "Added to Cart",
-                    description: `${shapatar.name} has been added to your cart.`,
+                    title: t('modal.toastTitle'),
+                    description: `${isRtl ? shapatar.nameUr : shapatar.name} ${isRtl ? 'آپ کی کارٹ میں شامل کر دیا گیا ہے۔' : 'has been added to your cart.'}`,
                   });
                 }
                 scrollToSection('order');
               }}
-              className="relative z-10 glow-btn bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold text-xl transition-all shadow-glow hover:shadow-glow-lg border-none"
+              className="relative z-10 glow-btn bg-primary text-primary-foreground px-6 py-3 sm:px-10 sm:py-4 rounded-full font-bold text-base sm:text-xl transition-all shadow-glow hover:shadow-glow-lg border-none"
               data-testid="order-shapatar-button"
             >
-              <span className="mr-2">🔥</span>Order Shapatar Roll Now
+              <span className={isRtl ? 'ml-2' : 'mr-2'}>🔥</span>{t('hero.orderNow')}
             </motion.button>
           </motion.div>
         </div>
@@ -300,14 +302,14 @@ export function Hero() {
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none"></div>
         
         <h3 className="text-xl font-bold text-primary mb-12 text-center uppercase tracking-widest opacity-80">
-          Customer Love
+          {t('hero.customerLove')}
         </h3>
         
         <div className="flex w-max gap-8 animate-marquee">
           {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
             <div 
               key={i}
-              className="flex-shrink-0 bg-card/40 backdrop-blur-md border border-white/5 p-8 rounded-3xl w-[300px] md:w-[380px] shadow-glow-sm hover:shadow-glow transition-all duration-500 group"
+              className="flex-shrink-0 bg-card/40 backdrop-blur-md border border-white/5 p-6 sm:p-8 rounded-3xl w-[280px] sm:w-[300px] md:w-[380px] shadow-glow-sm hover:shadow-glow transition-all duration-500 group"
             >
               <div className="flex text-primary mb-4 group-hover:scale-110 transition-transform origin-left">
                 {[...Array(t.rating)].map((_, idx) => (

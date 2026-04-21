@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { useCart, type CartItem } from '@/hooks/use-cart';
+import { useLanguage } from '@/hooks/use-language';
+import { Languages } from 'lucide-react';
 
 interface NavigationProps {
   onCartClick: () => void;
@@ -15,10 +17,11 @@ export function Navigation({ onCartClick }: NavigationProps) {
   const [activeSection, setActiveSection] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { getTotalItems } = useCart();
+  const { language, setLanguage, t, isRtl } = useLanguage();
   
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      setIsScrolled(window.scrollY > (window.innerWidth < 768 ? 20 : 100));
       
       // Update active section based on scroll position
       const sections = ['home', 'menu', 'order', 'about', 'contact'];
@@ -46,11 +49,11 @@ export function Navigation({ onCartClick }: NavigationProps) {
   };
 
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'menu', label: 'Menu' },
-    { id: 'order', label: 'Order' },
-    { id: 'about', label: 'About' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'home', label: t('nav.home') },
+    { id: 'menu', label: t('nav.menu') },
+    { id: 'order', label: t('nav.order') },
+    { id: 'about', label: t('nav.about') },
+    { id: 'contact', label: t('nav.contact') },
   ];
 
   const NavLink = ({ item }: { item: { id: string; label: string } }) => (
@@ -67,25 +70,25 @@ export function Navigation({ onCartClick }: NavigationProps) {
 
   return (
     <nav 
-      className={`fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-b border-border z-50 transition-all duration-300 ${
-        isScrolled ? 'shadow-lg' : ''
+      className={`fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border z-50 transition-all duration-500 ${
+        isScrolled ? 'shadow-glow-sm py-2' : 'py-0'
       }`}
       data-testid="navigation-bar"
     >
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className={`flex items-center justify-between transition-all duration-500 ${isScrolled ? 'h-16' : 'h-20'}`}>
           {/* Logo */}
           <button
             onClick={() => scrollToSection('home')}
             className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
             data-testid="logo-button"
           >
-            <div className="w-12 h-12 bg-transparent rounded-full flex items-center justify-center overflow-hidden">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-transparent rounded-full flex items-center justify-center overflow-hidden">
               <img src="/logo.png" alt="AL-Hani Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold font-poppins text-primary">AL-Hani Fast Food</h1>
-              <p className="text-xs text-muted hidden sm:block">Taste That Speaks for Itself!</p>
+              <h1 className="text-lg sm:text-2xl font-bold font-poppins text-primary leading-tight">{t('hero.title')} {t('hero.subtitle')}</h1>
+              <p className="text-xs text-muted hidden sm:block">{t('hero.tagline')}</p>
             </div>
           </button>
 
@@ -96,8 +99,18 @@ export function Navigation({ onCartClick }: NavigationProps) {
             ))}
           </div>
 
-          {/* Cart & Mobile Menu */}
-          <div className="flex items-center space-x-4">
+          {/* Cart, Language & Mobile Menu */}
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLanguage(language === 'en' ? 'ur' : 'en')}
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 hover:bg-secondary rounded-full transition text-primary font-bold"
+            >
+              <Languages className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm uppercase">{language === 'en' ? 'اردو' : 'EN'}</span>
+            </Button>
+
             <Button
               variant="ghost"
               size="icon"

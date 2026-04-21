@@ -6,13 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/hooks/use-cart';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/use-language';
 import { MENU_ITEMS } from '@/lib/data';
 import type { MenuItem } from '@/lib/types';
+import { ItemModal } from './item-modal';
 
 export function Menu() {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { t, isRtl } = useLanguage();
 
   useEffect(() => {
     const handleSelectCategory = (event: any) => {
@@ -23,47 +30,53 @@ export function Menu() {
     };
 
     window.addEventListener('select-menu-category', handleSelectCategory);
-    return () => window.removeEventListener('select-menu-category', handleSelectCategory);
+    
+    // Check if mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('select-menu-category', handleSelectCategory);
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
   const menuItems = MENU_ITEMS;
   const isLoading = false;
 
   const categories = [
-    { id: 'all', label: 'All Items' },
-    { id: 'burgers', label: 'Burgers' },
-    { id: 'sandwiches', label: 'Sandwiches' },
-    { id: 'rolls', label: 'Rolls' },
-    { id: 'pizzas', label: 'Pizzas' },
-    { id: 'drinks', label: 'Drinks' },
-    { id: 'specials', label: 'Specials' }
+    { id: 'all', label: t('menu.all') },
+    { id: 'burgers', label: t('menu.burgers') },
+    { id: 'sandwiches', label: t('menu.sandwiches') },
+    { id: 'rolls', label: t('menu.rolls') },
+    { id: 'pizzas', label: t('menu.pizzas') },
+    { id: 'drinks', label: t('menu.drinks') },
+    { id: 'specials', label: t('menu.specials') }
   ];
 
   const filteredItems = activeCategory === 'all' 
     ? menuItems 
     : menuItems.filter(item => item.category === activeCategory);
 
-  const handleAddToCart = (item: MenuItem) => {
-    addToCart(item);
-    toast({
-      title: "Added to Cart",
-      description: `${item.name} has been added to your cart.`,
-    });
-    // Add visual feedback
-    const button = document.querySelector(`[data-item-id="${item.id}"]`);
-    if (button) {
-      button.classList.add('cart-pulse');
-      setTimeout(() => button.classList.remove('cart-pulse'), 300);
-    }
+  const displayedItems = (isMobile && !showAll) 
+    ? filteredItems.filter(item => item.isHot)
+    : filteredItems;
+
+  const handleSelectItem = (item: MenuItem) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
   };
 
   return (
     <section id="menu" className="py-20 bg-secondary/50" data-testid="menu-section">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold font-poppins text-primary mb-4">Our Menu</h2>
+          <h2 className="text-4xl md:text-5xl font-bold font-poppins text-primary mb-4">{t('menu.title')}</h2>
           <p className="text-lg text-muted max-w-2xl mx-auto">
-            Explore our delicious selection of fast food favorites, made fresh and served hot!
+            {t('menu.desc')}
           </p>
         </div>
 
@@ -98,16 +111,16 @@ export function Menu() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-2 sm:px-0"
         >
           <AnimatePresence mode="popLayout">
-            {filteredItems.length === 0 ? (
+            {displayedItems.length === 0 ? (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="col-span-full text-center py-12"
               >
-                <p className="text-muted text-lg">No items found in this category.</p>
+                <p className="text-muted text-lg">{t('menu.noItems')}</p>
               </motion.div>
             ) : (
-              filteredItems.map(item => (
+              displayedItems.map(item => (
                 <motion.div
                   layout
                   key={item.id}
@@ -118,8 +131,9 @@ export function Menu() {
                 >
                   <Card 
                     id={`menu-item-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="food-card bg-card rounded-2xl overflow-hidden shadow-card border-none hover:shadow-glow group"
+                    className="food-card bg-card rounded-2xl overflow-hidden shadow-card border-none hover:shadow-glow group cursor-pointer"
                     data-testid={`menu-item-${item.id}`}
+                    onClick={() => handleSelectItem(item)}
                   >
                     <div className="relative overflow-hidden">
                       <img 
@@ -127,24 +141,36 @@ export function Menu() {
                         alt={item.name} 
                         className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                       />
+                      {item.isHot && (
+                        <div className="absolute top-3 left-3 z-10">
+                          <Badge className="bg-primary text-primary-foreground font-bold border-none shadow-glow animate-pulse">
+                            {isRtl ? 'تازہ' : 'HOT'}
+                          </Badge>
+                        </div>
+                      )}
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-300"></div>
                     </div>
-                    <CardContent className="p-5">
-                      <h3 className="text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors">
-                        {item.name}
+                    <CardContent className="p-4 sm:p-5">
+                      <h3 className="text-lg sm:text-xl font-bold text-primary mb-1 sm:mb-2 group-hover:text-accent transition-colors truncate">
+                        {isRtl ? item.nameUr : item.name}
                       </h3>
-                      <p className="text-sm text-muted mb-4 line-clamp-2">{item.description}</p>
+                      <p className="text-xs sm:text-sm text-muted mb-3 sm:mb-4 line-clamp-2 h-8 sm:h-10">
+                        {isRtl ? item.descriptionUr : item.description}
+                      </p>
                       <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-primary">
+                        <span className="text-xl sm:text-2xl font-bold text-primary">
                           Rs. {item.price}
                         </span>
                         <Button
-                          onClick={() => handleAddToCart(item)}
-                          className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-semibold hover:bg-primary/90 transition shadow-lg hover:scale-105 active:scale-95"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelectItem(item);
+                          }}
+                          className="bg-primary text-primary-foreground px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold hover:bg-primary/90 transition shadow-lg hover:scale-105 active:scale-95"
                           data-item-id={item.id}
                           data-testid={`add-to-cart-${item.id}`}
                         >
-                          <span className="mr-1">+</span> Add
+                          <span className="mr-1">+</span> {t('menu.add')}
                         </Button>
                       </div>
                     </CardContent>
@@ -154,7 +180,31 @@ export function Menu() {
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* See All Items Button (Mobile only) */}
+        {isMobile && !showAll && filteredItems.length > displayedItems.length && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-center mt-12"
+          >
+            <Button
+              onClick={() => setShowAll(true)}
+              className="bg-primary text-primary-foreground px-10 py-6 rounded-full font-bold text-lg shadow-glow hover:scale-105 transition-all"
+            >
+              {t('menu.seeAll')}
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Item Selection Modal */}
+        <ItemModal 
+          item={selectedItem}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </section>
   );
 }
+
