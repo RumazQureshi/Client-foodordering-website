@@ -34,7 +34,7 @@ export function About() {
               <img 
                 src="/owner.png" 
                 alt="Al-Hani Fast Food Owner" 
-                className="rounded-2xl shadow-glow w-full h-[500px] object-cover object-top transition-transform duration-500 hover:scale-[1.02]"
+                className="rounded-2xl shadow-glow w-full h-[300px] sm:h-[500px] object-cover object-top transition-transform duration-500 hover:scale-[1.02]"
                 data-testid="owner-image"
               />
             </motion.div>

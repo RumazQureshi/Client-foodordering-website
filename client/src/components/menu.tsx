@@ -71,7 +71,7 @@ export function Menu() {
   };
 
   return (
-    <section id="menu" className="py-20 bg-secondary/50" data-testid="menu-section">
+    <section id="menu" className="py-20 bg-secondary/50 overflow-hidden" data-testid="menu-section">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold font-poppins text-primary mb-4">{t('menu.title')}</h2>
@@ -86,7 +86,7 @@ export function Menu() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0"
+          className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth"
         >
           {categories.map(category => (
             <Button

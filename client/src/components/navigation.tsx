@@ -87,7 +87,7 @@ export function Navigation({ onCartClick }: NavigationProps) {
               <img src="/logo.png" alt="AL-Hani Logo" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h1 className="text-lg sm:text-2xl font-bold font-poppins text-primary leading-tight">{t('hero.title')} {t('hero.subtitle')}</h1>
+              <h1 className="text-base sm:text-2xl font-bold font-poppins text-primary leading-tight">{t('hero.title')} {t('hero.subtitle')}</h1>
               <p className="text-xs text-muted hidden sm:block">{t('hero.tagline')}</p>
             </div>
           </button>

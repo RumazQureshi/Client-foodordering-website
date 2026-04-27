@@ -117,10 +117,10 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-poppins mb-4 sm:mb-6 px-4"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold font-poppins mb-4 sm:mb-6 px-4"
           >
             <span className="text-primary">{t('hero.title')}</span>
-            <span className="text-foreground text-nowrap sm:text-wrap"> {t('hero.subtitle')}</span>
+            <span className="text-foreground sm:text-wrap"> {t('hero.subtitle')}</span>
           </motion.h1>
           
           <motion.p 
@@ -199,7 +199,7 @@ export function Hero() {
                 }}
                 animate={{
                   y: [0, -20, 0],
-                  x: [0, 5, -5, 0],
+                  x: [0, 0, 0, 0], // Disabled x-axis movement to prevent mobile overflow
                   rotate: [0, 1, -1, 0],
                 }}
                 transition={{
@@ -208,12 +208,6 @@ export function Hero() {
                     repeat: Infinity,
                     ease: "easeInOut",
                     delay: index * 0.4
-                  },
-                  x: {
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: index * 0.3
                   },
                   rotate: {
                     duration: 5,
@@ -305,26 +299,26 @@ export function Hero() {
           {t('hero.customerLove')}
         </h3>
         
-        <div className="flex w-max gap-8 animate-marquee">
-          {[...testimonials, ...testimonials, ...testimonials].map((t, i) => (
+        <div className={`flex w-max gap-8 animate-marquee ${isRtl ? 'flex-row-reverse' : ''}`}>
+          {[...testimonials, ...testimonials, ...testimonials].map((testimonial, i) => (
             <div 
               key={i}
-              className="flex-shrink-0 bg-card/40 backdrop-blur-md border border-white/5 p-6 sm:p-8 rounded-3xl w-[280px] sm:w-[300px] md:w-[380px] shadow-glow-sm hover:shadow-glow transition-all duration-500 group"
+              className={`flex-shrink-0 bg-card/40 backdrop-blur-md border border-white/5 p-6 sm:p-8 rounded-3xl w-[280px] sm:w-[300px] md:w-[380px] shadow-glow-sm hover:shadow-glow transition-all duration-500 group ${isRtl ? 'text-right' : 'text-left'}`}
             >
-              <div className="flex text-primary mb-4 group-hover:scale-110 transition-transform origin-left">
-                {[...Array(t.rating)].map((_, idx) => (
+              <div className={`flex text-primary mb-4 group-hover:scale-110 transition-transform ${isRtl ? 'origin-right justify-end' : 'origin-left'}`}>
+                {[...Array(testimonial.rating)].map((_, idx) => (
                   <Star key={idx} size={18} fill="currentColor" />
                 ))}
               </div>
-              <p className="text-foreground/90 text-sm md:text-base italic mb-6 whitespace-normal leading-relaxed">
-                "{t.text}"
+              <p className={`text-foreground/90 text-sm md:text-base mb-6 whitespace-normal leading-relaxed ${isRtl ? 'font-urdu' : 'italic'}`}>
+                "{testimonial.text}"
               </p>
-              <div className="flex items-center space-x-3">
+              <div className={`flex items-center ${isRtl ? 'flex-row-reverse space-x-reverse' : 'space-x-3'}`}>
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs">
-                  {t.author.charAt(0)}
+                  {testimonial.author?.charAt(0) || 'A'}
                 </div>
-                <p className="text-primary font-bold text-sm tracking-wide">
-                  {t.author}
+                <p className={`text-primary font-bold text-sm ${isRtl ? '' : 'tracking-wide'}`}>
+                  {testimonial.author}
                 </p>
               </div>
             </div>
